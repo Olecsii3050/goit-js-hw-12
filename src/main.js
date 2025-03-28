@@ -1,7 +1,13 @@
 import 'izitoast/dist/css/iziToast.min.css';
 import iziToast from 'izitoast';
 import { fetchImages } from './js/pixabay-api.js';
-import { renderImages, showLoader, hideLoader } from './js/render-functions.js';
+import {
+  renderImages,
+  showLoader,
+  hideLoader,
+  showMessage,
+  clearGallery,
+} from './js/render-functions.js';
 
 let currentPage = 1;
 let currentQuery = '';
@@ -26,6 +32,14 @@ form.addEventListener('submit', async event => {
   try {
     const images = await fetchImages(currentQuery, currentPage);
     hideLoader();
+
+    clearGallery();
+
+    if (images.length === 0) {
+      showMessage('No images found. Please try a different query.');
+      return;
+    }
+
     renderImages(images, false);
     if (images.length > 0) {
       loadMoreBtn.style.display = 'block';

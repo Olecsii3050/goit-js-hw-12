@@ -38,13 +38,18 @@ export const renderImages = (images, append = false) => {
         </li>
     `
     )
-
     .join('');
 
   if (append) {
     gallery.insertAdjacentHTML('beforeend', markup);
   } else {
     gallery.innerHTML = markup;
+  }
+
+  if (!lightbox) {
+    lightbox = new SimpleLightbox('.gallery a', {});
+  } else {
+    lightbox.refresh();
   }
 };
 
@@ -58,4 +63,9 @@ export const hideLoader = () => {
 
 export const showMessage = message => {
   iziToast.error({ title: 'Error', message, position: 'topRight' });
+};
+
+export const clearGallery = () => {
+  const gallery = document.querySelector('.gallery');
+  gallery.innerHTML = '';
 };
