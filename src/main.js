@@ -8,6 +8,7 @@ let currentQuery = '';
 
 const form = document.querySelector('.form');
 const loadMoreBtn = document.querySelector('.load-more');
+const searchInput = document.querySelector('input[name="search-text"]');
 
 form.addEventListener('submit', async event => {
   event.preventDefault();
@@ -25,7 +26,7 @@ form.addEventListener('submit', async event => {
   try {
     const images = await fetchImages(currentQuery, currentPage);
     hideLoader();
-    renderImages(images);
+    renderImages(images, false);
     if (images.length > 0) {
       loadMoreBtn.style.display = 'block';
     }
@@ -33,6 +34,8 @@ form.addEventListener('submit', async event => {
     hideLoader();
     console.error('Error fetching images:', error);
     showMessage('Failed to fetch images. Please try again later.');
+  } finally {
+    searchInput.value = '';
   }
 });
 
@@ -43,7 +46,7 @@ loadMoreBtn.addEventListener('click', async () => {
     const images = await fetchImages(currentQuery, currentPage);
     hideLoader();
     if (images.length > 0) {
-      renderImages(images);
+      renderImages(images, true);
       const galleryItems = document.querySelectorAll('.gallery li');
       const itemHeight = galleryItems[0].getBoundingClientRect().height;
       window.scrollBy({

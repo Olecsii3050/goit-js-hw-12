@@ -4,9 +4,8 @@ import iziToast from 'izitoast';
 
 let lightbox;
 
-export const renderImages = images => {
+export const renderImages = (images, append = false) => {
   const gallery = document.querySelector('.gallery');
-  gallery.innerHTML = '';
 
   if (images.length === 0) {
     showMessage(
@@ -42,15 +41,10 @@ export const renderImages = images => {
 
     .join('');
 
-  gallery.insertAdjacentHTML('beforeend', markup);
-
-  if (lightbox) {
-    lightbox.refresh();
+  if (append) {
+    gallery.insertAdjacentHTML('beforeend', markup);
   } else {
-    lightbox = new SimpleLightbox('.gallery a', {
-      captionsData: 'alt',
-      captionDelay: 250,
-    });
+    gallery.innerHTML = markup;
   }
 };
 
