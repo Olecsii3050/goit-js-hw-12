@@ -27,13 +27,11 @@ form.addEventListener('submit', async event => {
   currentQuery = query;
   currentPage = 1;
   loadMoreBtn.style.display = 'none';
+  clearGallery();
 
   showLoader();
   try {
     const images = await fetchImages(currentQuery, currentPage);
-    hideLoader();
-
-    clearGallery();
 
     if (images.length === 0) {
       showMessage('No images found. Please try a different query.');
@@ -41,39 +39,33 @@ form.addEventListener('submit', async event => {
     }
 
     renderImages(images, false);
-    if (images.length > 0) {
-      loadMoreBtn.style.display = 'block';
-    }
+    loadMoreBtn.style.display = 'block';
   } catch (error) {
-    hideLoader();
     console.error('Error fetching images:', error);
     showMessage('Failed to fetch images. Please try again later.');
   } finally {
+    hideLoader();
     searchInput.value = '';
   }
 });
 
 loadMoreBtn.addEventListener('click', async () => {
   currentPage += 1;
+  loadMoreBtn.style.display = 'none';
   showLoader();
   try {
     const images = await fetchImages(currentQuery, currentPage);
-    hideLoader();
+
     if (images.length > 0) {
       renderImages(images, true);
-      const galleryItems = document.querySelectorAll('.gallery li');
-      const itemHeight = galleryItems[0].getBoundingClientRect().height;
-      window.scrollBy({
-        top: itemHeight * 2,
-        behavior: 'smooth',
-      });
+      loadMoreBtn.style.display = 'block';
     } else {
-      loadMoreBtn.style.display = 'none';
       showMessage("We're sorry, but you've reached the end of search results.");
     }
   } catch (error) {
-    hideLoader();
     console.error('Error fetching images:', error);
     showMessage('Failed to fetch images. Please try again later.');
+  } finally {
+    hideLoader();
   }
 });
